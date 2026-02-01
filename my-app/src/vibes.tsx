@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import background from "./assets/librarybg.png";
+
 
 // Types
 type User = {
@@ -27,12 +29,20 @@ const usersDB: User[] = [
 ];
 
 const initialBooksDB: Book[] = [
-  { id: 1, title: "1984", author: "George Orwell", available: true },
-  { id: 2, title: "The Hobbit", author: "J.R.R. Tolkien", available: true },
-  { id: 3, title: "Fahrenheit 451", author: "Ray Bradbury", available: true }
+  { id: 1, title: "Ziemassvētku paltuss", author: "Račs Guntars", available: true },
+  { id: 2, title: "The Hobbit", author: "J.R.R. Tolkien", available: false },
+  { id: 3, title: "Pasaka par žurķi Frici", author: "Ingrīda Bērziņa", available: true },
+  { id: 4, title: "Bīstamā skola", author: "Volkinšteine, Zane", available: true },
+  { id: 5, title: "Var krist arī augšup", author: "Meierhofs, Joahims", available: true },
+  { id: 6, title: "Laimes pieskārieni", author: "Bērziņa, Ruta", available: true },
+  { id: 7, title: "Sudrabs", author: "Šmite, Linda", available: true },
+  { id: 8, title: "Es nemiršu nekad", author: "Jundze, Arno", available: true },
+  { id: 9, title: "Āpsēns Pēcis un svešinieki", author: "Staka, Agija", available: true },
+  { id: 10, title: "Kārumpasakas un vērtīgu konfekšu receptes", author: "Margeviča, Liene", available: true },
+  { id: 11, title: "Trīs kapibaras grib zināt", author: "Bērs, Mateuss", available: true }
 ];
 
-// Minimal Login component so this file is self-contained
+//simple login part
 function Login({ onLogin }: { onLogin: (u: string, p: string) => void }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -43,17 +53,20 @@ function Login({ onLogin }: { onLogin: (u: string, p: string) => void }) {
   }
 
   return (
+    <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
     <form onSubmit={submit}>
       <div>
-        <label>Username</label>
+        <label>Segvārds</label>
         <input value={username} onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
       </div>
       <div>
-        <label>Password</label>
+        <label>Parole</label>
         <input type="password" value={password} onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Ieiet</button>
     </form>
+    </div>
+    </>
   );
 }
 
@@ -77,14 +90,14 @@ function BookList(props: {
           <li key={b.id}>
             <strong>{b.title}</strong> — {b.author} {b.available ? "(available)" : "(checked out)"}
             {b.available ? (
-              <button onClick={() => onBorrow(b.id)}>Borrow</button>
+              <button onClick={() => onBorrow(b.id)}>Aizņemties</button>
             ) : (
               // show return button only if current user borrowed it
               borrowed.some(x => x.bookId === b.id && x.userId === user.id) ? (
-                <button onClick={() => onReturn(b.id)}>Return</button>
+                <button onClick={() => onReturn(b.id)}>Aizņemties</button>
               ) : null
             )}
-            {user.role === "admin" && <button onClick={() => onRemove(b.id)}>Remove</button>}
+            {user.role === "admin" && <button onClick={() => onRemove(b.id)}>Izdzēst</button>}
           </li>
         ))}
       </ul>
@@ -105,12 +118,14 @@ function AdminPanel({ onAdd }: { onAdd: (title: string, author: string) => void 
   }
 
   return (
-    <form onSubmit={submit}>
-      <h3>Admin</h3>
-      <input placeholder="Title" value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
-      <input placeholder="Author" value={author} onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)} />
-      <button type="submit">Add book</button>
-    </form>
+      <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
+          <form onSubmit={submit}>
+              <h3>Admin panelis</h3>
+              <input placeholder="Title" value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
+              <input placeholder="Author" value={author} onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)} />
+              <button type="submit">Pievienot grāmatu</button>
+          </form>
+      </div></>
   );
 }
 
@@ -126,13 +141,13 @@ function App() {
       u => u.username === username && u.password === password
     );
     if (found) setUser(found);
-    else alert("Wrong login");
+    else alert("Nepareizs lietotājvārds vai parole");
   }
 
   // BORROW
   function borrowBook(bookId: number) {
     if (!user) {
-      alert("You must be logged in to borrow a book");
+      alert("Tev jābūt pierakstītam lai paņemtu grāmatu!");
       return;
     }
     setBooks(books.map(b =>
@@ -171,28 +186,26 @@ function App() {
   }
 
   return (
-    <div>
-      <h2>Library</h2>
-      <p>Logged in as: {user.username} ({user.role})</p>
+    <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
+          <h2>Bibliotēkas panelis</h2>
+          <p>Pierakstījies kā: {user.username} ({user.role})</p>
 
-      <input
-        placeholder="Search books..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
+          <input
+              placeholder="Meklēt grāmatu"
+              value={search}
+              onChange={e => setSearch(e.target.value)} />
 
-      <BookList
-        books={books}
-        search={search}
-        user={user}
-        borrowed={borrowed}
-        onBorrow={borrowBook}
-        onReturn={returnBook}
-        onRemove={removeBook}
-      />
+          <BookList
+              books={books}
+              search={search}
+              user={user}
+              borrowed={borrowed}
+              onBorrow={borrowBook}
+              onReturn={returnBook}
+              onRemove={removeBook} />
 
-      {user.role === "admin" && <AdminPanel onAdd={addBook} />}
-    </div>
+          {user.role === "admin" && <AdminPanel onAdd={addBook} />}
+      </div></>
   );
 }
 

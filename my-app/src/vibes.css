@@ -3,7 +3,10 @@
 html, body, #root {
   height: 100%;
   margin: 0;
+  font-family: 'Inter', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 #root {
   max-width: 1280px;
@@ -24,14 +27,14 @@ html, body, #root {
   position: relative;
   z-index: 1;
   padding:20px;
-  margin-top:50%;
+  margin: 5vh 20vh;
   color:white;
   font-size:21pt;
 }
 
-.button {
+.button, button {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: 6px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -41,13 +44,13 @@ html, body, #root {
   z-index: 2;
   margin: 1rem 0;
   color:white;
-
+  padding: 10px 20px;
   font-size:21pt;
 }
 
 label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
   font-size: 18pt;
 }
 h1 {
@@ -55,22 +58,10 @@ h1 {
   margin-bottom: 1rem;
   color:white;
 }
-.button {
-  background-color: rgb(28, 28, 28);
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-}
-
 .bg {
   /* full-bleed background that always covers the viewport */
   position: fixed;
-  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0; */
+  inset: 0;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -80,4 +71,8 @@ h1 {
 
 input {
   width:12vw;
+}
+
+label {
+    color:white;
 }
