@@ -55,6 +55,7 @@ function Login({ onLogin }: { onLogin: (u: string, p: string) => void }) {
   return (
     <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
     <form onSubmit={submit}>
+      <h2 className="loginTitle" >Lūdzu pierakstaties</h2>
       <div>
         <label>Segvārds</label>
         <input value={username} onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
@@ -63,7 +64,8 @@ function Login({ onLogin }: { onLogin: (u: string, p: string) => void }) {
         <label>Parole</label>
         <input type="password" value={password} onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
       </div>
-      <button type="submit">Ieiet</button>
+      <button type="submit">Ienākt
+      </button>
     </form>
     </div>
     </>
@@ -87,17 +89,17 @@ function BookList(props: {
     <div>
       <ul>
         {filtered.map(b => (
-          <li key={b.id}>
-            <strong>{b.title}</strong> — {b.author} {b.available ? "(available)" : "(checked out)"}
+          <li className="booktitle" key={b.id}>
+            <strong >{b.title}</strong> — {b.author} {b.available ? "(pieejama)" : "(paņemta)"}
             {b.available ? (
-              <button onClick={() => onBorrow(b.id)}>Aizņemties</button>
+              <button className="borrowButton" onClick={() => onBorrow(b.id)}>Aizņemties</button>
             ) : (
               // show return button only if current user borrowed it
               borrowed.some(x => x.bookId === b.id && x.userId === user.id) ? (
-                <button onClick={() => onReturn(b.id)}>Aizņemties</button>
+                <button className="borrowButton" onClick={() => onReturn(b.id)}>Aizņemties</button>
               ) : null
             )}
-            {user.role === "admin" && <button onClick={() => onRemove(b.id)}>Izdzēst</button>}
+            {user.role === "admin" && <button className="deleteButton" onClick={() => onRemove(b.id)}>Izdzēst</button>}
           </li>
         ))}
       </ul>
@@ -118,11 +120,11 @@ function AdminPanel({ onAdd }: { onAdd: (title: string, author: string) => void 
   }
 
   return (
-      <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
+      <><div className="mainglass">
           <form onSubmit={submit}>
               <h3>Admin panelis</h3>
-              <input placeholder="Title" value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
-              <input placeholder="Author" value={author} onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)} />
+              <input placeholder="Grāmatas nosaukums" value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
+              <input placeholder="Autors" value={author} onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)} />
               <button type="submit">Pievienot grāmatu</button>
           </form>
       </div></>
@@ -188,7 +190,7 @@ function App() {
   return (
     <><div className="bg" style={{ backgroundImage: `url(${background})` }}></div><div className="mainglass">
           <h2>Bibliotēkas panelis</h2>
-          <p>Pierakstījies kā: {user.username} ({user.role})</p>
+          <p>Pierakstījies kā: {user.username}</p>
 
           <input
               placeholder="Meklēt grāmatu"
@@ -205,6 +207,7 @@ function App() {
               onRemove={removeBook} />
 
           {user.role === "admin" && <AdminPanel onAdd={addBook} />}
+          <button className="logoutButton" onClick={() => setUser(null)}>Iziet</button>
       </div></>
   );
 }
