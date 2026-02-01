@@ -123,7 +123,7 @@ function AdminPanel({ onAdd }: { onAdd: (title: string, author: string) => void 
       <><div className="mainglass">
           <form onSubmit={submit}>
               <h3>Admin panelis</h3>
-              <input placeholder="Grāmatas nosaukums" value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
+              <input placeholder="Grāmatas nosaukums" style={{marginBottom:"10px"}} value={title} onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
               <input placeholder="Autors" value={author} onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)} />
               <button type="submit">Pievienot grāmatu</button>
           </form>
