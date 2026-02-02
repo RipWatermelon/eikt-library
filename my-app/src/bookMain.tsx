@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import background from "./assets/librarybg.png";
 
-
-// Types
 type User = {
   id: number;
   username: string;
@@ -19,6 +17,7 @@ type Book = {
 };
 
 type Borrowed = {
+  id: number;
   userId: number;
   bookId: number;
 };
@@ -83,6 +82,8 @@ function BookList(props: {
 }) {
   const { books, search, user, borrowed, onBorrow, onReturn, onRemove } = props;
 
+  
+
   const filtered = books.filter(b => b.title.toLowerCase().includes(search.toLowerCase()) || b.author.toLowerCase().includes(search.toLowerCase()));
 
   return (
@@ -94,9 +95,8 @@ function BookList(props: {
             {b.available ? (
               <button className="borrowButton" onClick={() => onBorrow(b.id)}>Aizņemties</button>
             ) : (
-              // show return button only if current user borrowed it
               borrowed.some(x => x.bookId === b.id && x.userId === user.id) ? (
-                <button className="borrowButton" onClick={() => onReturn(b.id)}>Aizņemties</button>
+                <button className="borrowButton" onClick={() => onReturn(b.id)}>Atgriezt</button>
               ) : null
             )}
             {user.role === "admin" && <button className="deleteButton" onClick={() => onRemove(b.id)}>Izdzēst</button>}
@@ -137,7 +137,14 @@ function App() {
   const [borrowed, setBorrowed] = useState<Borrowed[]>([]);
   const [search, setSearch] = useState("");
 
-  // LOGIN
+  useEffect(() => {
+    const item = localStorage.getItem("books");
+    if (item) {
+      setBooks(JSON.parse(item));
+    }
+  }
+  , []);
+
   function login(username: string, password: string) {
     const found = usersDB.find(
       u => u.username === username && u.password === password
@@ -146,7 +153,6 @@ function App() {
     else alert("Nepareizs lietotājvārds vai parole");
   }
 
-  // BORROW
   function borrowBook(bookId: number) {
     if (!user) {
       alert("Tev jābūt pierakstītam lai paņemtu grāmatu!");
@@ -155,10 +161,12 @@ function App() {
     setBooks(books.map(b =>
       b.id === bookId ? { ...b, available: false } : b
     ));
-    setBorrowed([...borrowed, { userId: user.id, bookId }]);
+    setBorrowed([...borrowed, {
+      userId: user.id, bookId,
+      id: Date.now()
+    }]);
   }
 
-  // RETURN
   function returnBook(bookId: number) {
     if (!user) return;
     setBooks(books.map(b =>
@@ -169,18 +177,23 @@ function App() {
     ));
   }
 
-  // ADMIN ADD
   function addBook(title: string, author: string) {
     setBooks([
       ...books,
       { id: Date.now(), title, author, available: true }
     ]);
+    localStorage.setItem("books", JSON.stringify([
+      ...books,
+      { id: Date.now(), title, author, available: true }
+    ]));
   }
 
-  // ADMIN REMOVE
   function removeBook(bookId: number) {
     setBooks(books.filter(b => b.id !== bookId));
     setBorrowed(borrowed.filter(b => b.bookId !== bookId));
+    localStorage.setItem("books", JSON.stringify([
+      ...books.filter(b => b.id !== bookId)
+    ]));
   }
 
   if (!user) {
